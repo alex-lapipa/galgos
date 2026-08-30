@@ -82,6 +82,7 @@ CREATE TABLE IF NOT EXISTS galgo.ingestion_runs (
 CREATE INDEX IF NOT EXISTS documents_search_idx ON galgo.documents USING gin(search_text);
 CREATE INDEX IF NOT EXISTS chunks_document_idx ON galgo.chunks(document_id, chunk_index);
 CREATE INDEX IF NOT EXISTS chunks_embedding_ann_idx ON galgo.chunks USING lakebase_ann (embedding vector_cosine_ops);
+CREATE INDEX IF NOT EXISTS chunks_bm25 ON galgo.chunks USING lakebase_bm25 (search_text) WITH (default_limit=50);
 CREATE INDEX IF NOT EXISTS graph_nodes_type_idx ON galgo.graph_nodes(node_type);
 CREATE INDEX IF NOT EXISTS graph_nodes_label_trgm_idx ON galgo.graph_nodes USING gin(normalized_label gin_trgm_ops);
 CREATE INDEX IF NOT EXISTS graph_edges_source_idx ON galgo.graph_edges(source_node_id, edge_type);
@@ -111,7 +112,7 @@ WITH vector_ranked AS (
   SELECT id, RANK() OVER (ORDER BY bm25_score) AS rank, bm25_score
   FROM (
     SELECT c.id,
-      (c.search_text <@> to_bm25query(to_tsvector('simple', query_text), 'chunks_bm25'))::double precision AS bm25_score
+      (c.search_text <@> to_bm25query(to_tsvector('simple', query_text), 'galgo.chunks_bm25'))::double precision AS bm25_score
     FROM galgo.chunks c
     ORDER BY bm25_score LIMIT GREATEST(match_count * 4, 40)
   ) k
@@ -123,8 +124,9 @@ WITH vector_ranked AS (
   FROM vector_ranked v FULL OUTER JOIN keyword_ranked k ON k.id=v.id
 )
 SELECT c.id,c.document_id,d.title,d.repository_path,c.heading_path,c.line_start,c.line_end,
-       c.text,f.semantic_score,f.lexical_score,f.score
+       c.text,f.semantic_score,f.lexical_score,
+       (f.score * CASE d.corpus_status WHEN 'canonical' THEN 1.00 WHEN 'methodology' THEN 0.95 ELSE 0.70 END)::double precision AS score
 FROM fused f JOIN galgo.chunks c ON c.id=f.id JOIN galgo.documents d ON d.id=c.document_id
-ORDER BY f.score DESC,c.id LIMIT match_count;
+ORDER BY score DESC,c.id LIMIT match_count;
 $$;
 COMMIT;

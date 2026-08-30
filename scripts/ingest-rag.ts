@@ -58,4 +58,4 @@ async function main(){
     console.log(JSON.stringify({runId,documents:docs.length,chunks:totalChunks,embedded,graphNodes:counts[0].nodes,graphEdges:counts[0].edges},null,2));
   }catch(error){await sql`UPDATE galgo.ingestion_runs SET status='failed',details=${JSON.stringify({error:String(error)})}::jsonb,completed_at=now() WHERE id=${runId}`;throw error}
 }
-main();
+main().catch(error=>{console.error(error);process.exitCode=1});
