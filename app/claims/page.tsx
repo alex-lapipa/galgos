@@ -1,0 +1,1 @@
+export default function Claims(){return <main className="page"><span className="eyebrow">Claim explorer</span><h1>Claims, not legends.</h1><p>Claims are extracted with exact document, section, line range, source relationships, evidence classification, and review status. This route becomes queryable after corpus ingestion.</p></main>}

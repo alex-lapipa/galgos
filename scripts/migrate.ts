@@ -1,0 +1,2 @@
+import fs from 'node:fs/promises';import path from 'node:path';
+if(process.env.VERCEL_ENV==='production')throw new Error('Refusing migrations in production. Run this against a named Neon preview branch.');if(!process.env.DATABASE_URL)throw new Error('DATABASE_URL is required.');const file=path.join(process.cwd(),'db/migrations/0001_galgo_foundation.sql');console.log(`Migration staged for isolated preview branch: ${file}`);console.log('Validate Lakebase extension availability, then execute this reviewed migration through the Neon preview workflow.');

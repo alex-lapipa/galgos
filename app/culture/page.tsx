@@ -1,0 +1,1 @@
+export default function Culture(){return <main className="page"><span className="eyebrow">Cultural record</span><h1>Law. Art. Text.</h1><p>Media records preserve creator, institution, source, and rights status before they can appear in an exhibit.</p></main>}

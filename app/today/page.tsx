@@ -1,0 +1,1 @@
+export default function Today(){return <main className="page"><span className="eyebrow">2000 → present</span><h1>Spain, now.</h1><p>Measured evidence, law, organizational positions, public debate, and unknowns remain visibly distinct.</p></main>}

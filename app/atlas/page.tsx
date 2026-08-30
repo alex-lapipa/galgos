@@ -1,0 +1,1 @@
+export default function Atlas(){return <main className="page"><span className="eyebrow">Iberian evidence atlas</span><h1>Place, without false precision.</h1><p>PostGIS locations render only when a source supports a coordinate or defensible geographic boundary.</p></main>}
