@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { retrieve } from '@/lib/rag';
 
 const request=z.object({question:z.string().min(8).max(1200)});
-const GENERATION_MODEL=process.env.RAG_GENERATION_MODEL||'openai/gpt-5.6-terra';
+const GENERATION_MODEL=process.env.RAG_GENERATION_MODEL||'openai/gpt-5.6-sol';
 
 export async function POST(req:Request){
   const parsed=request.safeParse(await req.json());

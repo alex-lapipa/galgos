@@ -1,6 +1,7 @@
 BEGIN;
 CREATE SCHEMA IF NOT EXISTS galgo;
-CREATE EXTENSION IF NOT EXISTS vector;
+CREATE EXTENSION IF NOT EXISTS lakebase_vector CASCADE;
+CREATE EXTENSION IF NOT EXISTS lakebase_text CASCADE;
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 CREATE EXTENSION IF NOT EXISTS unaccent;
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
@@ -79,9 +80,8 @@ CREATE TABLE IF NOT EXISTS galgo.ingestion_runs (
 );
 
 CREATE INDEX IF NOT EXISTS documents_search_idx ON galgo.documents USING gin(search_text);
-CREATE INDEX IF NOT EXISTS chunks_search_idx ON galgo.chunks USING gin(search_text);
 CREATE INDEX IF NOT EXISTS chunks_document_idx ON galgo.chunks(document_id, chunk_index);
-CREATE INDEX IF NOT EXISTS chunks_embedding_hnsw_idx ON galgo.chunks USING hnsw (embedding vector_cosine_ops) WITH (m=16, ef_construction=64);
+CREATE INDEX IF NOT EXISTS chunks_embedding_ann_idx ON galgo.chunks USING lakebase_ann (embedding vector_cosine_ops);
 CREATE INDEX IF NOT EXISTS graph_nodes_type_idx ON galgo.graph_nodes(node_type);
 CREATE INDEX IF NOT EXISTS graph_nodes_label_trgm_idx ON galgo.graph_nodes USING gin(normalized_label gin_trgm_ops);
 CREATE INDEX IF NOT EXISTS graph_edges_source_idx ON galgo.graph_edges(source_node_id, edge_type);
@@ -95,46 +95,36 @@ CREATE OR REPLACE FUNCTION galgo.hybrid_search(
   lexical_weight double precision DEFAULT 0.30
 )
 RETURNS TABLE(
-  chunk_id uuid,
-  document_id uuid,
-  title text,
-  repository_path text,
-  heading_path text,
-  line_start integer,
-  line_end integer,
-  chunk_text text,
-  semantic_score double precision,
-  lexical_score double precision,
-  score double precision
+  chunk_id uuid, document_id uuid, title text, repository_path text,
+  heading_path text, line_start integer, line_end integer, chunk_text text,
+  semantic_score double precision, lexical_score double precision, score double precision
 )
 LANGUAGE sql STABLE AS $$
-WITH semantic AS (
-  SELECT c.id, row_number() OVER (ORDER BY c.embedding <=> query_embedding) AS rank,
-         GREATEST(0, 1 - (c.embedding <=> query_embedding))::double precision AS sim
-  FROM galgo.chunks c
-  WHERE c.embedding IS NOT NULL
-  ORDER BY c.embedding <=> query_embedding
-  LIMIT GREATEST(match_count * 4, 40)
-), lexical AS (
-  SELECT c.id, row_number() OVER (ORDER BY ts_rank_cd(c.search_text, websearch_to_tsquery('simple', query_text)) DESC) AS rank,
-         ts_rank_cd(c.search_text, websearch_to_tsquery('simple', query_text))::double precision AS lex
-  FROM galgo.chunks c
-  WHERE c.search_text @@ websearch_to_tsquery('simple', query_text)
-  ORDER BY lex DESC
-  LIMIT GREATEST(match_count * 4, 40)
+WITH vector_ranked AS (
+  SELECT id, RANK() OVER (ORDER BY distance) AS rank, 1 - distance AS similarity
+  FROM (
+    SELECT c.id, (c.embedding <=> query_embedding)::double precision AS distance
+    FROM galgo.chunks c WHERE c.embedding IS NOT NULL
+    ORDER BY distance LIMIT GREATEST(match_count * 4, 40)
+  ) v
+), keyword_ranked AS (
+  SELECT id, RANK() OVER (ORDER BY bm25_score) AS rank, bm25_score
+  FROM (
+    SELECT c.id,
+      (c.search_text <@> to_bm25query(to_tsvector('simple', query_text), 'chunks_bm25'))::double precision AS bm25_score
+    FROM galgo.chunks c
+    ORDER BY bm25_score LIMIT GREATEST(match_count * 4, 40)
+  ) k
 ), fused AS (
-  SELECT COALESCE(s.id,l.id) AS id,
-         COALESCE(s.sim,0)::double precision AS semantic_score,
-         COALESCE(l.lex,0)::double precision AS lexical_score,
-         (semantic_weight * COALESCE(1.0/(60+s.rank),0) + lexical_weight * COALESCE(1.0/(60+l.rank),0))::double precision AS score
-  FROM semantic s FULL OUTER JOIN lexical l ON l.id=s.id
+  SELECT COALESCE(v.id,k.id) AS id,
+    COALESCE(v.similarity,0)::double precision AS semantic_score,
+    COALESCE(k.bm25_score,0)::double precision AS lexical_score,
+    (semantic_weight * COALESCE(1.0/(60+v.rank),0) + lexical_weight * COALESCE(1.0/(60+k.rank),0))::double precision AS score
+  FROM vector_ranked v FULL OUTER JOIN keyword_ranked k ON k.id=v.id
 )
-SELECT c.id, c.document_id, d.title, d.repository_path, c.heading_path, c.line_start, c.line_end,
-       c.text, f.semantic_score, f.lexical_score, f.score
-FROM fused f
-JOIN galgo.chunks c ON c.id=f.id
-JOIN galgo.documents d ON d.id=c.document_id
-ORDER BY f.score DESC
-LIMIT match_count;
+SELECT c.id,c.document_id,d.title,d.repository_path,c.heading_path,c.line_start,c.line_end,
+       c.text,f.semantic_score,f.lexical_score,f.score
+FROM fused f JOIN galgo.chunks c ON c.id=f.id JOIN galgo.documents d ON d.id=c.document_id
+ORDER BY f.score DESC,c.id LIMIT match_count;
 $$;
 COMMIT;
