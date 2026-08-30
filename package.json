@@ -1,6 +1,53 @@
 {
-  "name":"galgo-7","private":true,"packageManager":"pnpm@10.0.0","engines":{"node":"24.x"},
-  "scripts":{"dev":"next dev","build":"next build","start":"next start","lint":"eslint .","typecheck":"tsc --noEmit","test":"vitest run --passWithNoTests","corpus:scan":"tsx scripts/corpus.ts scan","corpus:ingest":"tsx scripts/corpus.ts ingest","corpus:embed":"tsx scripts/corpus.ts embed","corpus:evaluate":"tsx scripts/corpus.ts evaluate","corpus:sync":"tsx scripts/corpus.ts sync","db:migrate":"tsx scripts/migrate.ts"},
-  "dependencies":{"@ai-sdk/gateway":"latest","@ai-sdk/react":"latest","@neondatabase/serverless":"latest","adm-zip":"latest","ai":"latest","gray-matter":"latest","next":"latest","react":"latest","react-dom":"latest","remark-gfm":"latest","remark-parse":"latest","remark-rehype":"latest","unified":"latest","unist-util-visit":"latest","zod":"latest"},
-  "devDependencies":{"@types/adm-zip":"latest","@types/node":"latest","@types/react":"latest","@types/react-dom":"latest","eslint":"latest","eslint-config-next":"latest","tsx":"latest","typescript":"latest","vitest":"latest"}
+  "name": "galgo-7",
+  "private": true,
+  "packageManager": "pnpm@10.0.0",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "corpus:scan": "tsx scripts/corpus.ts scan",
+    "corpus:ingest": "tsx scripts/corpus.ts ingest",
+    "corpus:embed": "tsx scripts/corpus.ts embed",
+    "corpus:evaluate": "tsx scripts/corpus.ts evaluate",
+    "corpus:sync": "tsx scripts/corpus.ts sync",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:rag:migrate": "tsx scripts/apply-rag-migration.ts",
+    "rag:ingest": "tsx scripts/ingest-rag.ts",
+    "rag:eval": "tsx scripts/eval-rag.ts"
+  },
+  "dependencies": {
+    "@ai-sdk/gateway": "latest",
+    "@ai-sdk/react": "latest",
+    "@neondatabase/serverless": "latest",
+    "adm-zip": "latest",
+    "ai": "latest",
+    "gray-matter": "latest",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "remark-gfm": "latest",
+    "remark-parse": "latest",
+    "remark-rehype": "latest",
+    "unified": "latest",
+    "unist-util-visit": "latest",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "@types/adm-zip": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "eslint": "latest",
+    "eslint-config-next": "latest",
+    "tsx": "latest",
+    "typescript": "latest",
+    "vitest": "latest"
+  }
 }
