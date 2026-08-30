@@ -1,0 +1,2 @@
+import Link from 'next/link';
+export function ArchiveShell({children}:{children:React.ReactNode}){return <><aside className="rail"/><div className="shell"><nav className="nav"><Link href="/">GALGO/7</Link><div className="links"><Link href="/journey">Journey</Link><Link href="/evidence">Evidence</Link><Link href="/archive">Archive</Link><Link href="/ask">Ask</Link></div><span className="mono">Archive → Cosmos</span></nav>{children}</div></>}

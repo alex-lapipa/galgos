@@ -1,0 +1,1 @@
+export default function Graph(){return <main className="page"><span className="eyebrow">Knowledge graph</span><h1>Provenance paths.</h1><p>The production graph is Postgres-native: entities, explicit relationships, claims, and sources. The client receives only evidence-filtered neighborhoods — never the whole graph.</p></main>}

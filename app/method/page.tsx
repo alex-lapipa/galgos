@@ -1,0 +1,1 @@
+export default function Method(){return <main className="page"><span className="eyebrow">Methodology</span><h1>Uncertainty is part of the record.</h1><p>The governing corpus documents define seven evidence labels, source hierarchy, five continuity dimensions, and an active research ledger. The application reads these rules; it never rewrites them.</p></main>}
