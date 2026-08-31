@@ -22,7 +22,9 @@
     "db:migrate": "tsx scripts/migrate.ts",
     "db:rag:migrate": "tsx scripts/apply-rag-migration.ts",
     "rag:ingest": "tsx scripts/ingest-rag.ts",
-    "rag:eval": "tsx scripts/eval-rag.ts"
+    "rag:eval": "tsx scripts/eval-rag.ts",
+    "rag:eval:gold": "tsx scripts/eval-rag-gold.ts",
+    "ask:eval:contract": "tsx scripts/eval-ask-contract.ts"
   },
   "dependencies": {
     "@ai-sdk/gateway": "4.0.69",
