@@ -24,6 +24,7 @@
     "rag:ingest": "tsx scripts/ingest-rag.ts",
     "rag:eval": "tsx scripts/eval-rag.ts",
     "rag:eval:gold": "tsx scripts/eval-rag-gold.ts",
+    "rag:eval:gold:http": "tsx scripts/eval-rag-gold-http.ts",
     "ask:eval:contract": "tsx scripts/eval-ask-contract.ts"
   },
   "dependencies": {
