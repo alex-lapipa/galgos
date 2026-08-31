@@ -1,1 +1,9 @@
-export default function Claims(){return <main className="page"><span className="eyebrow">Claim explorer</span><h1>Claims, not legends.</h1><p>Claims are extracted with exact document, section, line range, source relationships, evidence classification, and review status. This route becomes queryable after corpus ingestion.</p></main>}
+import {ClaimsExplorer} from '@/components/ClaimsExplorer';
+import {listClaims} from '@/lib/claims';
+
+export const metadata={title:'Claims — GALGO/7',description:'Auditable evidence-classified claims about the history of the Galgo Español.'};
+
+export default async function Claims(){
+ const claims=await listClaims();
+ return <ClaimsExplorer claims={claims}/>;
+}
