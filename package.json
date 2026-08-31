@@ -7,7 +7,9 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "tsx scripts/release-production.ts && next build",
+    "build": "next build && tsx scripts/release-production.ts",
+    "build:app": "next build",
+    "release:production": "tsx scripts/release-production.ts",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
