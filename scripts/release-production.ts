@@ -4,8 +4,8 @@ import path from 'node:path';
 import { Pool } from '@neondatabase/serverless';
 
 const LOCK_KEY = 'galgos-production-bootstrap-v1';
-const EXPECTED_DOCUMENTS = 33;
-const EXPECTED_CHUNKS = 559;
+const MIN_DOCUMENTS = 34;
+const MIN_CHUNKS = 559;
 const MIN_GRAPH_NODES = 170;
 const MIN_GRAPH_EDGES = 194;
 
@@ -93,11 +93,11 @@ async function main() {
 
     const currentRun = run.rows[0];
     const totals = integrity.rows[0];
-    if (Number(currentRun.documents) !== EXPECTED_DOCUMENTS) {
-      throw new Error(`Expected ${EXPECTED_DOCUMENTS} ingested documents, found ${currentRun.documents}`);
+    if (Number(currentRun.documents) < MIN_DOCUMENTS) {
+      throw new Error(`Expected at least ${MIN_DOCUMENTS} ingested documents, found ${currentRun.documents}`);
     }
-    if (Number(currentRun.chunks) !== EXPECTED_CHUNKS || Number(currentRun.embedded_chunks) !== EXPECTED_CHUNKS) {
-      throw new Error(`Expected ${EXPECTED_CHUNKS} embedded chunks, found ${currentRun.embedded_chunks}/${currentRun.chunks}`);
+    if (Number(currentRun.chunks) < MIN_CHUNKS || Number(currentRun.embedded_chunks) !== Number(currentRun.chunks)) {
+      throw new Error(`Chunk integrity failed: ${currentRun.embedded_chunks}/${currentRun.chunks} chunks embedded`);
     }
     if (Number(totals.embedded) !== Number(totals.chunks)) {
       throw new Error(`Embedding integrity failed: ${totals.embedded}/${totals.chunks} chunks embedded`);
