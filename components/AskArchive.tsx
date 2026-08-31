@@ -18,7 +18,7 @@ const copy={
 
 function AnswerText({text,onCitation}:{text:string;onCitation:(id:number)=>void}){const paragraphs=text.split(/\n\s*\n/).filter(Boolean);return <>{paragraphs.map((paragraph,i)=><p key={i}>{paragraph.split(/(\[\d+\])/g).filter(Boolean).map((part,j)=>{const m=part.match(/^\[(\d+)\]$/);return m?<button type="button" key={j} className={styles.cite} onClick={()=>onCitation(Number(m[1]))} aria-label={`Open source ${m[1]}`}>{part}</button>:part})}</p>)}</>}
 function statusLabel(value:string,locale:Locale){return value.replaceAll('_',' ').replace(/\b\w/g,c=>c.toUpperCase())+(locale==='es'&&value==='unverified'?' · no verificado':'')}
-function corpusLabel(c:Citation,t:typeof copy.en){return c.corpusStatus==='canonical'?t.canonical:c.corpusStatus==='legacy'?t.legacy:t.methodology}
+function corpusLabel(c:Citation,t:{canonical:string;legacy:string;methodology:string}){return c.corpusStatus==='canonical'?t.canonical:c.corpusStatus==='legacy'?t.legacy:t.methodology}
 
 export function AskArchive(){
  const [locale,setLocale]=useState<Locale>('en');const [question,setQuestion]=useState('');const [result,setResult]=useState<Result|null>(null);const [loading,setLoading]=useState(false);const [error,setError]=useState(false);const [selectedCitation,setSelectedCitation]=useState<Citation|null>(null);const t=copy[locale];
