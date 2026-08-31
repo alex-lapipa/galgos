@@ -30,7 +30,7 @@ function graphValues(data:Record<string,unknown>){
 
 async function main(){
   if(!process.env.DATABASE_URL)throw new Error('DATABASE_URL is required');
-  const sql=neon(process.env.DATABASE_URL); const gitSha=execSync('git rev-parse HEAD',{encoding:'utf8'}).trim();
+  const sql=neon(process.env.DATABASE_URL); const gitSha=process.env.VERCEL_GIT_COMMIT_SHA||execSync('git rev-parse HEAD',{encoding:'utf8'}).trim();
   const docs=await listCorpus();
   const run=await sql`INSERT INTO galgo.ingestion_runs(git_sha,embedding_model,parser_version,documents,status) VALUES(${gitSha},${EMBEDDING_MODEL},${PARSER_VERSION},${docs.length},'running') RETURNING id`;
   const runId=run[0].id; let totalChunks=0, embedded=0;
