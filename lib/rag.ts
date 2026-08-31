@@ -28,7 +28,7 @@ export async function graphContext(labels:string[], limit=30) {
     FROM galgo.graph_edges e
     JOIN galgo.graph_nodes sn ON sn.id=e.source_node_id
     JOIN galgo.graph_nodes tn ON tn.id=e.target_node_id
-    LEFT JOIN galgo.documents d ON d.id=e.document_id
-    WHERE sn.normalized_label = ANY(${clean}) OR tn.normalized_label = ANY(${clean})
+    JOIN galgo.documents d ON d.id=e.document_id
+    WHERE d.active=true AND (sn.normalized_label = ANY(${clean}) OR tn.normalized_label = ANY(${clean}))
     ORDER BY e.confidence DESC LIMIT ${limit}`;
 }
