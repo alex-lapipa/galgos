@@ -2,12 +2,9 @@ import { execFileSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { Pool } from '@neondatabase/serverless';
+import { listCorpus } from '../lib/corpus';
 
-const LOCK_KEY = 'galgos-production-bootstrap-v1';
-const MIN_DOCUMENTS = 34;
-const MIN_CHUNKS = 559;
-const MIN_GRAPH_NODES = 170;
-const MIN_GRAPH_EDGES = 194;
+const LOCK_KEY = 'galgos-production-bootstrap-v2';
 
 async function main() {
   const environment = process.env.VERCEL_ENV;
@@ -20,111 +17,59 @@ async function main() {
   if (!databaseUrl) throw new Error('DATABASE_URL is required for production bootstrap');
 
   const gitSha = process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
+  const manifest = await listCorpus();
+  const expectedKeys = manifest.map(doc => doc.documentId || doc.path).sort();
   const pool = new Pool({ connectionString: databaseUrl });
   const client = await pool.connect();
   let locked = false;
 
   try {
-    const lock = await client.query<{ locked: boolean }>(
-      'SELECT pg_try_advisory_lock(hashtext($1)) AS locked',
-      [LOCK_KEY],
-    );
+    const lock = await client.query<{ locked: boolean }>('SELECT pg_try_advisory_lock(hashtext($1)) AS locked', [LOCK_KEY]);
     locked = Boolean(lock.rows[0]?.locked);
     if (!locked) throw new Error('Another GALGOS production bootstrap is already running');
 
-    const migrationPath = path.join(process.cwd(), 'db', 'migrations', '0002_rag_vector_graph.sql');
-    const migrationSql = await readFile(migrationPath, 'utf8');
-    await client.query(migrationSql);
+    for (const file of ['0002_rag_vector_graph.sql', '0003_corpus_lifecycle.sql']) {
+      const migrationSql = await readFile(path.join(process.cwd(), 'db', 'migrations', file), 'utf8');
+      await client.query(migrationSql);
+    }
 
-    const existing = await client.query<{ id: string }>(
-      `SELECT id::text
-         FROM galgo.ingestion_runs
-        WHERE git_sha = $1 AND status = 'completed'
-        ORDER BY completed_at DESC
-        LIMIT 1`,
-      [gitSha],
-    );
-
+    const existing = await client.query<{ id: string }>(`SELECT id::text FROM galgo.ingestion_runs WHERE git_sha=$1 AND status='completed' ORDER BY completed_at DESC LIMIT 1`, [gitSha]);
     if (existing.rowCount === 0) {
       const tsx = path.join(process.cwd(), 'node_modules', '.bin', 'tsx');
-      execFileSync(tsx, ['scripts/ingest-rag.ts'], {
-        cwd: process.cwd(),
-        env: process.env,
-        stdio: 'inherit',
-      });
+      execFileSync(tsx, ['scripts/ingest-rag.ts'], { cwd: process.cwd(), env: process.env, stdio: 'inherit' });
     } else {
       console.log(`[release] ingestion already completed for ${gitSha.slice(0, 12)}`);
     }
 
-    const run = await client.query<{
-      documents: number;
-      chunks: number;
-      embedded_chunks: number;
-      graph_nodes: number;
-      graph_edges: number;
-      status: string;
-    }>(
-      `SELECT documents, chunks, embedded_chunks, graph_nodes, graph_edges, status
-         FROM galgo.ingestion_runs
-        WHERE git_sha = $1
-        ORDER BY completed_at DESC NULLS LAST
-        LIMIT 1`,
-      [gitSha],
-    );
+    const run = await client.query<{documents:number;chunks:number;embedded_chunks:number;graph_nodes:number;graph_edges:number;status:string;parser_version:string}>(`SELECT documents,chunks,embedded_chunks,graph_nodes,graph_edges,status,parser_version FROM galgo.ingestion_runs WHERE git_sha=$1 ORDER BY completed_at DESC NULLS LAST LIMIT 1`, [gitSha]);
+    if (!run.rows[0] || run.rows[0].status !== 'completed') throw new Error('Production ingestion did not complete successfully');
 
-    if (!run.rows[0] || run.rows[0].status !== 'completed') {
-      throw new Error('Production ingestion did not complete successfully');
-    }
+    const active = await client.query<{document_key:string}>(`SELECT document_key FROM galgo.documents WHERE active=true ORDER BY document_key`);
+    const activeKeys = active.rows.map(row => row.document_key);
+    const missing = expectedKeys.filter(key => !activeKeys.includes(key));
+    const unexpected = activeKeys.filter(key => !expectedKeys.includes(key));
+    if (missing.length || unexpected.length) throw new Error(`Corpus manifest mismatch: missing=${missing.join(',')||'none'} unexpected=${unexpected.join(',')||'none'}`);
 
-    const integrity = await client.query<{
-      documents: number;
-      chunks: number;
-      embedded: number;
-      graph_nodes: number;
-      graph_edges: number;
-    }>(
-      `SELECT
-         (SELECT count(*)::int FROM galgo.documents) AS documents,
-         (SELECT count(*)::int FROM galgo.chunks) AS chunks,
-         (SELECT count(*)::int FROM galgo.chunks WHERE embedding IS NOT NULL) AS embedded,
-         (SELECT count(*)::int FROM galgo.graph_nodes) AS graph_nodes,
-         (SELECT count(*)::int FROM galgo.graph_edges) AS graph_edges`,
-    );
-
-    const currentRun = run.rows[0];
+    const integrity = await client.query<{documents:number;chunks:number;embedded:number;graph_nodes:number;graph_edges:number;retired:number}>(`SELECT
+      (SELECT count(*)::int FROM galgo.documents WHERE active=true) documents,
+      (SELECT count(*)::int FROM galgo.chunks c JOIN galgo.documents d ON d.id=c.document_id WHERE d.active=true) chunks,
+      (SELECT count(*)::int FROM galgo.chunks c JOIN galgo.documents d ON d.id=c.document_id WHERE d.active=true AND c.embedding IS NOT NULL) embedded,
+      (SELECT count(*)::int FROM galgo.graph_nodes) graph_nodes,
+      (SELECT count(*)::int FROM galgo.graph_edges e JOIN galgo.documents d ON d.id=e.document_id WHERE d.active=true) graph_edges,
+      (SELECT count(*)::int FROM galgo.documents WHERE active=false) retired`);
     const totals = integrity.rows[0];
-    if (Number(currentRun.documents) < MIN_DOCUMENTS) {
-      throw new Error(`Expected at least ${MIN_DOCUMENTS} ingested documents, found ${currentRun.documents}`);
-    }
-    if (Number(currentRun.chunks) < MIN_CHUNKS || Number(currentRun.embedded_chunks) !== Number(currentRun.chunks)) {
-      throw new Error(`Chunk integrity failed: ${currentRun.embedded_chunks}/${currentRun.chunks} chunks embedded`);
-    }
-    if (Number(totals.embedded) !== Number(totals.chunks)) {
-      throw new Error(`Embedding integrity failed: ${totals.embedded}/${totals.chunks} chunks embedded`);
-    }
-    if (Number(totals.graph_nodes) < MIN_GRAPH_NODES || Number(totals.graph_edges) < MIN_GRAPH_EDGES) {
-      throw new Error(`Knowledge graph integrity failed: ${totals.graph_nodes} nodes / ${totals.graph_edges} edges`);
-    }
+    if (Number(totals.documents) !== expectedKeys.length) throw new Error(`Expected exactly ${expectedKeys.length} active documents, found ${totals.documents}`);
+    if (Number(totals.embedded) !== Number(totals.chunks)) throw new Error(`Embedding integrity failed: ${totals.embedded}/${totals.chunks} active chunks embedded`);
 
-    console.log(JSON.stringify({
-      productionBootstrap: 'ready',
-      gitSha: gitSha.slice(0, 12),
-      documents: totals.documents,
-      chunks: totals.chunks,
-      embedded: totals.embedded,
-      graphNodes: totals.graph_nodes,
-      graphEdges: totals.graph_edges,
-    }, null, 2));
+    console.log(JSON.stringify({productionBootstrap:'ready',gitSha:gitSha.slice(0,12),parserVersion:run.rows[0].parser_version,manifestDocuments:expectedKeys.length,activeDocuments:totals.documents,retiredDocuments:totals.retired,chunks:totals.chunks,embedded:totals.embedded,graphNodes:totals.graph_nodes,activeGraphEdges:totals.graph_edges},null,2));
   } finally {
-    if (locked) {
-      await client.query('SELECT pg_advisory_unlock(hashtext($1))', [LOCK_KEY]).catch(() => undefined);
-    }
+    if (locked) await client.query('SELECT pg_advisory_unlock(hashtext($1))', [LOCK_KEY]).catch(() => undefined);
     client.release();
     await pool.end();
   }
 }
 
-main().catch((error) => {
+main().catch(error => {
   console.error('[release] production bootstrap failed:', error instanceof Error ? error.message : String(error));
   process.exitCode = 1;
 });
