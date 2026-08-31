@@ -19,7 +19,7 @@ evidence_level: "mixed"
 source_quality: "internal_claim_register_resolved_to_corpus_sources"
 created_at: "2026-08-31"
 updated_at: "2026-08-31"
-version: "1.0"
+version: "1.1"
 review_status: "active_review"
 claim_records:
   - claim_id: "GE-C001"
@@ -39,13 +39,13 @@ claim_records:
     contradicting_or_limiting_sources: ["Corpus_Gaps_and_Verification_Audit_2026.md"]
     note: "Hunting traditions and similar sighthound types do not by themselves demonstrate a population-level ancestry event."
   - claim_id: "GE-C003"
-    statement: "Medieval fueros contain specific legal provisions about galgos that can be quoted as direct evidence."
+    statement: "The surviving Fuero de Salamanca textual tradition contains a legal provision explicitly naming a galgo."
     dimension: "name"
-    evidence_level: "traditional claim"
-    review_status: "primary_source_required"
-    supporting_sources: ["00_research_ledger.md"]
-    contradicting_or_limiting_sources: ["Corpus_Gaps_and_Verification_Audit_2026.md", "Batch_15_Archival_Roadmap_Primary_Source_Programme.md"]
-    note: "Exact witness, provision and page or folio must be located before a specific legal quotation is treated as confirmed."
+    evidence_level: "confirmed"
+    review_status: "source_mapped_reference_edition"
+    supporting_sources: ["Primary_Source_Fuero_de_Salamanca_Galgo_Provision.md"]
+    contradicting_or_limiting_sources: []
+    note: "The RAE historical corpus indexes the galgo dog-valuation rule as Fuero de Salamanca §195 from the Castro/Onís 1916 reference edition. This confirms medieval lexical/legal visibility, not modern breed-population continuity."
   - claim_id: "GE-C004"
     statement: "Between 50,000 and 100,000 galgos are abandoned in Spain every year."
     dimension: "cross-cutting"
@@ -94,6 +94,14 @@ claim_records:
     supporting_sources: []
     contradicting_or_limiting_sources: ["00_research_ledger.md", "Corpus_Gaps_and_Verification_Audit_2026.md"]
     note: "Treat Codex Romanicus as a garbled popular reference unless an exact classical work is identified."
+  - claim_id: "GE-C010"
+    statement: "The Fuero de Salamanca galgo provision is a ninth-century law."
+    dimension: "name"
+    evidence_level: "disproven or materially misleading"
+    review_status: "resolved_textual_chronology"
+    supporting_sources: []
+    contradicting_or_limiting_sources: ["Primary_Source_Fuero_de_Salamanca_Galgo_Provision.md"]
+    note: "The surviving extensive fuero/manuscript tradition is medieval and the RAE indexes the cited reference-edition passage around c.1300. Earlier lost legal layers must not be used to date this specific clause to the ninth century."
 ---
 
 # Galgo Español Claim Ledger
