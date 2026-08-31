@@ -1,4 +1,4 @@
-import Link from 'next/link';
 import {Suspense} from 'react';
 import {ResearchSession} from '@/components/ResearchSession';
-export function ArchiveShell({children}:{children:React.ReactNode}){return <><aside className="rail"/><div className="shell"><nav className="nav"><Link href="/">GALGO/7</Link><div className="links"><Link href="/en/timeline">Timeline</Link><Link href="/en/graph">Graph</Link><Link href="/journey">Journey</Link><Link href="/evidence">Evidence</Link><Link href="/archive">Archive</Link><Link href="/ask">Ask</Link></div><div className="nav-editions"><Link href="/en/timeline">EN</Link><span>/</span><Link href="/es/timeline">ES</Link></div></nav>{children}</div><Suspense fallback={null}><ResearchSession/></Suspense></>}
+import {SurfaceNavigation} from '@/components/SurfaceNavigation';
+export function ArchiveShell({children}:{children:React.ReactNode}){return <><aside className="rail"/><div className="shell"><Suspense fallback={null}><SurfaceNavigation/></Suspense><div className="surface-transition">{children}</div></div><Suspense fallback={null}><ResearchSession/></Suspense></>}
