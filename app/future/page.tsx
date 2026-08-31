@@ -1,1 +1,1 @@
-export default function Future(){return <main className="page"><span className="eyebrow">Future / possibility</span><h1>Cosmic Galgo.</h1><p>A deliberately speculative horizon for heritage, responsibility, science, culture, and new relationships — never presented as historical fact.</p></main>}
+import {redirect} from 'next/navigation';export default function Future(){redirect('/culture')}

@@ -1,47 +1,19 @@
 'use client';
-
 import Link from 'next/link';
 import {usePathname,useSearchParams} from 'next/navigation';
-import {timelineEvents} from '@/lib/timeline-data';
-import {institutionalEdges,institutionalNodes} from '@/lib/institutional-map';
 import styles from './SurfaceNavigation.module.css';
 
-function localized(path:string,locale:'en'|'es'){
- if(path.startsWith('/en/'))return `/${locale}/${path.slice(4)}`;
- if(path.startsWith('/es/'))return `/${locale}/${path.slice(4)}`;
- return path;
+function localeFor(path:string,params:{get:(key:string)=>string|null}){if(path.startsWith('/en/'))return'en';if(path.startsWith('/es/'))return'es';return params.get('lang')==='en'?'en':'es'}
+function languageHref(path:string,locale:'es'|'en'){
+ if(path.includes('/timeline'))return `/${locale}/timeline`;
+ if(path==='/ask'||path.startsWith('/ask?'))return `/ask?lang=${locale}`;
+ if(path.includes('/graph'))return locale==='es'?'/culture':'/en/graph';
+ return locale==='es'?path:`/en/timeline`;
 }
-function crumb(path:string){
- if(path.includes('/timeline'))return 'Timeline';
- if(path.includes('/graph'))return 'Institutional Graph';
- if(path.startsWith('/atlas'))return 'Evidence Atlas';
- if(path.startsWith('/archive/'))return 'Archive / Record';
- if(path.startsWith('/archive'))return 'Archive';
- if(path.startsWith('/ask'))return 'Ask Archive';
- if(path.startsWith('/journey'))return 'Journey';
- if(path.startsWith('/evidence'))return 'Evidence';
- if(path.startsWith('/claims'))return 'Claims';
- return 'Home';
-}
-function selectedLabel(params:{get:(name:string)=>string|null},path:string){
- const q=params.get('q');if(q)return q;
- const event=params.get('event');if(event){const hit=timelineEvents.find(e=>e.id===event);return hit?`${hit.date} · ${hit.title}`:event}
- const node=params.get('node');if(node)return institutionalNodes.find(n=>n.id===node)?.label||node;
- const edge=params.get('edge');if(edge){const e=institutionalEdges.find(x=>x.id===edge);if(e){const s=institutionalNodes.find(n=>n.id===e.source)?.label||e.source;const t=institutionalNodes.find(n=>n.id===e.target)?.label||e.target;return `${s} · ${e.predicate.replaceAll('_',' ')} · ${t}`;}return edge}
- if(path.startsWith('/archive/'))return decodeURIComponent(path.split('/').pop()||'').replaceAll('-',' ');
- return '';
-}
-
 export function SurfaceNavigation(){
- const pathname=usePathname();const params=useSearchParams();
- const locale:'en'|'es'=pathname.startsWith('/es/')?'es':'en';
- const selected=selectedLabel(params,pathname);
- const preserved=new URLSearchParams();for(const key of ['q','event','node','edge']){const v=params.get(key);if(v)preserved.set(key,v)}
- const serialized=preserved.toString();const suffix=serialized?`?${serialized}`:'';
- const askQ=params.get('q');
- const nav=[['Timeline',`/${locale}/timeline`],['Graph',`/${locale}/graph`],['Atlas','/atlas'],['Journey','/journey'],['Evidence','/evidence'],['Archive','/archive'],['Ask',`/ask${askQ?`?q=${encodeURIComponent(askQ)}`:''}`]] as const;
- return <>
-  <nav className="nav" aria-label="Primary research navigation"><Link href="/">GALGO/7</Link><div className="links">{nav.map(([label,href])=><Link key={label} href={href} className={pathname===href.split('?')[0]?styles.active:''}>{label}</Link>)}</div><div className="nav-editions" aria-label="Language"><Link className={locale==='en'?styles.activeLocale:''} href={`${localized(pathname,'en')}${suffix}`}>EN</Link><span>/</span><Link className={locale==='es'?styles.activeLocale:''} href={`${localized(pathname,'es')}${suffix}`}>ES</Link></div></nav>
-  <div className={styles.contextBar} aria-label="Research breadcrumb"><Link href="/">GALGO/7</Link><span>›</span><strong>{crumb(pathname)}</strong>{selected&&<><span>›</span><em title={selected}>{selected}</em></>}</div>
- </>
+ const pathname=usePathname();const params=useSearchParams();const locale=localeFor(pathname,params);
+ const es=[['Historia','/es/timeline'],['Cultura','/culture'],['Biblioteca','/archive'],['Pregunta','/ask?lang=es']] as const;
+ const en=[['History','/en/timeline'],['Culture','/culture?lang=en'],['Library','/archive?lang=en'],['Ask','/ask?lang=en']] as const;
+ const nav=locale==='es'?es:en;
+ return <nav className="nav" aria-label={locale==='es'?'Navegación principal':'Main navigation'}><Link href="/">GALGO/7</Link><div className="links">{nav.map(([label,href])=><Link key={label} href={href} className={pathname===href.split('?')[0]?styles.active:''}>{label}</Link>)}</div><div className="nav-editions" aria-label="Idioma"><Link className={locale==='es'?styles.activeLocale:''} href={languageHref(pathname,'es')}>ES</Link><span>/</span><Link className={locale==='en'?styles.activeLocale:''} href={languageHref(pathname,'en')}>EN</Link></div></nav>;
 }
