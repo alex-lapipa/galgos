@@ -19,7 +19,7 @@ evidence_level: "mixed"
 source_quality: "internal_claim_register_resolved_to_corpus_sources"
 created_at: "2026-08-31"
 updated_at: "2026-09-01"
-version: "1.4"
+version: "1.5"
 review_status: "active_review"
 claim_records:
   - claim_id: "GE-C001"
@@ -142,6 +142,31 @@ claim_records:
     supporting_sources: ["Primary_Source_Nemesianus_Iberian_Blood_Dogs.md"]
     contradicting_or_limiting_sources: []
     note: "The Latin Iberian-blood reference is direct evidence; the Loeb translation renders it as Spanish blood. Neither wording establishes that the dogs were galgos or a continuous modern breed population."
+  - claim_id: "GE-C016"
+    statement: "The official MNAR/CER.es Suárez Somonte object record documents a late-Roman hare-hunting panel from Mérida."
+    dimension: "function"
+    evidence_level: "confirmed"
+    review_status: "official_object_record_source_mapped"
+    supporting_sources: ["Object_Record_Suarez_Somonte_Hare_Hunt.md"]
+    contradicting_or_limiting_sources: []
+    note: "The museum record confirms Roman hare-hunting imagery at Augusta Emerita. It does not identify a modern Galgo Español or establish population continuity."
+  - claim_id: "GE-C017"
+    statement: "The AVRA mosaic from Roman Mérida depicts a dog hunting a hare; the excavator describes it as 'más bien un galgo' and treats AVRA as perhaps the dog's name."
+    dimension: "name"
+    evidence_level: "confirmed"
+    review_status: "primary_excavation_source_mapped_uncertain_name"
+    supporting_sources: ["Object_Record_Merida_AVRA_Hare_Mosaic.md"]
+    contradicting_or_limiting_sources: []
+    note: "The scene, inscription and excavator's descriptive term are direct object-level evidence. AVRA remains a probable rather than certain animal name, and 'galgo' is modern archaeological terminology."
+  - claim_id: "GE-C018"
+    statement: "The Thalassius mosaic from Roman Corduba depicts named dogs Nimbus and Lateras pursuing a hare."
+    dimension: "name"
+    evidence_level: "confirmed"
+    review_status: "primary_excavation_epigraphic_source_mapped"
+    supporting_sources: ["Object_Record_Thalassius_Nimbus_Lateras_Mosaic.md"]
+    contradicting_or_limiting_sources: []
+    note: "The excavation report identifies the dogs by the epigraphic names Nimbus and Lateras and describes them as galgos. This confirms naming and hunting function, not modern formal breed identity or population ancestry."
+
 ---
 
 # Galgo Español Claim Ledger
