@@ -7,51 +7,83 @@ document_type: "timeline"
 language: "en"
 source_languages: []
 period_start: ""
-period_end: ""
+period_end: "2026"
 geographies: []
 entities: []
 people: []
 dog_types: []
-topics: ["project tracking"]
-evidence_level: "unsupported"
-source_quality: "tier_1"
+topics: ["project tracking", "corpus status", "research gaps"]
+evidence_level: "confirmed"
+source_quality: "internal_corpus_register"
 created_at: "2026-08-30"
-updated_at: "2026-08-30"
-version: "1.0"
+updated_at: "2026-08-31"
+version: "2.0"
 citation_count: 0
-review_status: "draft"
+review_status: "verified-against-repository"
 ---
 
 # Research Ledger
 
-Live tracking of batch status. Updated after every batch is delivered.
+Current repository-level tracking for GALGOS. **File presence is not the same as claim verification.** For evidence-quality caveats see `Corpus_Gaps_and_Verification_Audit_2026.md`.
 
-| Batch | Scope | Status | Files delivered | Open questions / follow-ups |
-|---|---|---|---|---|
-| 00 | Research architecture | **Complete** | 6 | — |
-| 01 | Deep prehistory & ancient sighthound context | Pending | 0 | — |
-| 02 | Celts, Iberians, pre-Roman Europe | Pending | 0 | — |
-| 03 | Greece and Rome | Pending | 0 | — |
-| 04 | Late Antiquity / Visigothic | Pending | 0 | — |
-| 05 | Al-Andalus / North Africa | Pending | 0 | — |
-| 06 | Medieval fueros and law | Pending | 0 | — |
-| 07 | Medieval literature and hunting manuals | Pending | 0 | — |
-| 08 | 1450–1700 | Pending | 0 | — |
-| 09 | 1700–1900 | Pending | 0 | — |
-| 10 | 1900–2000 | Pending | 0 | — |
-| 11 | 2000–present | Pending | 0 | — |
-| 12 | Science of origin and continuity | Pending | 0 | — |
-| 13 | Synthesis | Pending | 0 | — |
+| Batch / layer | Scope | Repository status | Evidence / follow-up status |
+|---|---|---|---|
+| 00 | Research architecture, methodology, source hierarchy, terminology, audit | **Present** | Active governance layer |
+| 01–08 | Prehistory → early modern 1450–1700 | **Coverage exists in synthesis/source material; clean canonical batch files require reconciliation** | Priority rebuild from primary/source-mapped records |
+| 09 | 1700–1900 enriched | **Present** | Source verification should continue object-by-object |
+| 10 | 1900–2000 enriched | **Present** | Strengthen press, club, canódromo and named-dog primary records |
+| 11 | 2000–2026 enriched | **Present** | Preserve conflicting welfare/statistical systems separately |
+| 12 | English Greyhound crosses and diaspora | **Present** | Population-genetic impact remains an evidence question |
+| 13 | Comparative Iberian sighthounds | **Present** | Comparative synthesis; do not infer ancestry from similarity |
+| 14 | Synthesis / compilation | **Present** | Secondary synthesis inside this corpus; resolve claims back to source records |
+| 15 | Primary-source archival roadmap | **Present** | New active acquisition programme |
+| 16 | Visual and material culture evidence atlas | **Present** | v1 anchors + provenance methodology; expand object-by-object |
+| Institutional canonical | Institutional and organizational map | **Present** | Explicit graph relationships only |
+| Yo Galgo canonical | Documentary / media evidence record | **Present** | Source-mapped canonical record |
 
-## Known high-risk claims to verify carefully (flagged in advance from the brief)
+## Current research priorities
 
-- The popular "Fuero de Salamanca" galgo story — do not repeat unless the exact provision is located and verified (Batch 06).
-- Whether Arrian governed Baetica (Batch 03) — commonly repeated, needs verification.
-- The supposed "Codex Romanicus" — likely a garbled popular reference to a real classical text (*Cynegetica*, *Cynegeticus*, *Naturalis Historia*, or similar); to be resolved in Batch 03.
-- "Galgo descends from the vertragus" and "galgo descends from the Moorish sloughi" — both to be evaluated per the five-continuity framework, not accepted whole.
-- Any claim of unbroken genetic/population continuity from antiquity to the present-day closed studbook.
+### P0 — primary-source correction of high-risk origin claims
+
+- Locate and image-check exact legal provisions behind recurring Fuero de Salamanca / Fuero de Coria galgo claims.
+- Resolve classical `vertragus` evidence without converting functional analogy into biological descent.
+- Verify earliest datable uses of `galgo`, `galga` and `lebrel` at witness/page level.
+- Keep Al-Andalus / North-African hunting evidence separate from unsupported population-ancestry claims.
+
+### P1 — canonicalize earlier periods
+
+Rebuild clean, source-mapped canonical records for Batches 01–08 so the early history is not dependent on synthesis prose or legacy source records.
+
+### P2 — institutional and social history
+
+- Contemporary press timeline for clubs, coursing competitions and canódromos.
+- Named-dog / breeder / owner records where evidence permits.
+- Modern formal-breed governance from RSCE / FCI primary sources.
+- Legislative history from BOE and parliamentary records.
+
+### P3 — visual/material evidence
+
+- San Baudelio object-level records and rights-cleared reproductions.
+- Paul de Vos, *Un galgo blanco* object record and reusable image source.
+- BNE hunting-book plates labelled `galgo` / `lebrel`.
+- Historical press photography, race programmes, federation and club imagery.
+
+## Known high-risk claims
+
+- The popular "Fuero de Salamanca" galgo story — exact provision/witness still requires primary-source verification.
+- Whether Arrian's coursing dogs establish ancestry for the modern Galgo Español — they do not by themselves.
+- The supposed "Codex Romanicus" — treat as a garbled popular reference unless an exact work is identified.
+- "Galgo descends from the vertragus" and "galgo descends from the Moorish sloughi" — evaluate separately across function, type, population, name and formal-breed continuity.
+- Any claim of unbroken genetic/population continuity from antiquity to the present-day breed.
+- Any single national abandonment figure produced by flattening incompatible datasets.
+
+## Runtime / ingestion governance
+
+Corpus files are versioned in GitHub. Production ingestion is performed by the Vercel build/release workflow into the **Vercel-connected Neon database**. The research workflow should not make direct Neon connector edits.
 
 ## Suggested RAG questions
 
-- What is the current status of the Galgo Español research project?
-- Which claims were flagged in advance as needing extra scrutiny?
+- What is currently present in the GALGOS corpus, and what still needs canonicalization?
+- Which claims remain highest-risk and why?
+- Which primary repositories are prioritized for the next research phase?
+- What does the visual evidence support without proving breed ancestry?
