@@ -14,6 +14,7 @@ function localized(path:string,locale:'en'|'es'){
 function crumb(path:string){
  if(path.includes('/timeline'))return 'Timeline';
  if(path.includes('/graph'))return 'Institutional Graph';
+ if(path.startsWith('/atlas'))return 'Evidence Atlas';
  if(path.startsWith('/archive/'))return 'Archive / Record';
  if(path.startsWith('/archive'))return 'Archive';
  if(path.startsWith('/ask'))return 'Ask Archive';
@@ -37,7 +38,7 @@ export function SurfaceNavigation(){
  const preserved=new URLSearchParams();for(const key of ['q','event','node','edge']){const v=params.get(key);if(v)preserved.set(key,v)}
  const serialized=preserved.toString();const suffix=serialized?`?${serialized}`:'';
  const askQ=params.get('q');
- const nav=[['Timeline',`/${locale}/timeline`],['Graph',`/${locale}/graph`],['Journey','/journey'],['Evidence','/evidence'],['Archive','/archive'],['Ask',`/ask${askQ?`?q=${encodeURIComponent(askQ)}`:''}`]] as const;
+ const nav=[['Timeline',`/${locale}/timeline`],['Graph',`/${locale}/graph`],['Atlas','/atlas'],['Journey','/journey'],['Evidence','/evidence'],['Archive','/archive'],['Ask',`/ask${askQ?`?q=${encodeURIComponent(askQ)}`:''}`]] as const;
  return <>
   <nav className="nav" aria-label="Primary research navigation"><Link href="/">GALGO/7</Link><div className="links">{nav.map(([label,href])=><Link key={label} href={href} className={pathname===href.split('?')[0]?styles.active:''}>{label}</Link>)}</div><div className="nav-editions" aria-label="Language"><Link className={locale==='en'?styles.activeLocale:''} href={`${localized(pathname,'en')}${suffix}`}>EN</Link><span>/</span><Link className={locale==='es'?styles.activeLocale:''} href={`${localized(pathname,'es')}${suffix}`}>ES</Link></div></nav>
   <div className={styles.contextBar} aria-label="Research breadcrumb"><Link href="/">GALGO/7</Link><span>›</span><strong>{crumb(pathname)}</strong>{selected&&<><span>›</span><em title={selected}>{selected}</em></>}</div>
