@@ -13,6 +13,8 @@ export async function GET(){
     if(!process.env.DATABASE_URL)throw new Error('database unavailable');
     const [manifest,sql]=await Promise.all([listCorpus(),Promise.resolve(neon(process.env.DATABASE_URL))]);
     const expectedKeys=manifest.map(doc=>doc.documentId||doc.path).sort();
+    const policyWarnings=manifest.flatMap(doc=>doc.policyWarnings);
+    const sourceRoles=Object.fromEntries([...new Set(manifest.map(doc=>doc.sourceRole))].sort().map(role=>[role,manifest.filter(doc=>doc.sourceRole===role).length]));
     const rows=await sql`SELECT document_key FROM galgo.documents WHERE active=true ORDER BY document_key`;
     const activeKeys=rows.map(row=>String(row.document_key));
     const missing=expectedKeys.filter(key=>!activeKeys.includes(key));
@@ -35,7 +37,8 @@ export async function GET(){
       architecture:'GitHub corpus → Vercel release → Vercel-connected Neon',
       deployedGitSha,
       manifest:{expectedDocuments:expectedKeys.length,activeDocuments:Number(s.active_documents||0),missing,unexpected},
-      retrieval:{activeChunks:Number(s.active_chunks||0),embeddedChunks:Number(s.embedded_chunks||0),embeddingsComplete,embeddingModel:EMBEDDING_MODEL,generationModel},
+      corpusPolicy:{explicitMetadataMigrationComplete:policyWarnings.length===0,warningCount:policyWarnings.length,warningSample:policyWarnings.slice(0,12),sourceRoles},
+      retrieval:{activeChunks:Number(s.active_chunks||0),embeddedChunks:Number(s.embedded_chunks||0),embeddingsComplete,embeddingModel:EMBEDDING_MODEL,generationModel,maxChunksPerDocument:2},
       graph:{nodes:Number(s.graph_nodes||0),activeEdges:Number(s.active_graph_edges||0)},
       lifecycle:{retiredDocuments:Number(s.retired_documents||0)},
       ingestion:latest?{gitSha:String(latest.git_sha),parserVersion:String(latest.parser_version),embeddingModel:String(latest.embedding_model),completedAt:latest.completed_at}:null,
