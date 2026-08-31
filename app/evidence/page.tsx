@@ -1,1 +1,5 @@
-import {evidence,continuity} from '@/lib/content';export default function Evidence(){return <main className="page"><span className="eyebrow">Evidence observatory</span><h1>Evidence is the exhibit.</h1><section className="grid">{evidence.map((label,i)=><div className="panel" key={label} style={{gridColumn:'span 4'}}><span className={`evidence ${i===0?'confirmed':i===6?'disproven':''}`}>{label}</span><p>Visual treatment is semantic, labelled, and never dependent on chapter colour.</p></div>)}</section><h2 style={{fontFamily:'Fraunces',fontWeight:400,marginTop:48}}>Five continuities — never one ancestry score</h2><p>{continuity.join(' · ')}</p></main>}
+import {ContinuityMatrix} from '@/components/ContinuityMatrix';
+
+export const metadata={title:'Evidence Observatory — GALGO/7',description:'Five-continuity evidence matrix for the history of the Galgo Español.'};
+
+export default function Evidence(){return <ContinuityMatrix/>}
