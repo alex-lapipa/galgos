@@ -13,11 +13,18 @@ export type RetrievedChunk = {
   line_start:number; line_end:number; chunk_text:string; semantic_score:number; lexical_score:number; score:number;
 };
 
+function diversify(rows:RetrievedChunk[],limit:number,maxPerDocument=2){
+ const selected:RetrievedChunk[]=[];const counts=new Map<string,number>();
+ for(const row of rows){const count=counts.get(row.document_id)||0;if(count>=maxPerDocument)continue;selected.push(row);counts.set(row.document_id,count+1);if(selected.length>=limit)break;}
+ return selected;
+}
+
 export async function retrieve(question:string, limit=12):Promise<RetrievedChunk[]> {
   const { embedding } = await embed({ model: EMBEDDING_MODEL, value: question });
   const sql = db();
-  const rows = await sql`SELECT * FROM galgo.hybrid_search(${question}, ${JSON.stringify(embedding)}::vector, ${limit}, 0.70, 0.30)`;
-  return rows as RetrievedChunk[];
+  const candidateCount=Math.min(90,Math.max(limit*3,30));
+  const rows = await sql`SELECT * FROM galgo.hybrid_search(${question}, ${JSON.stringify(embedding)}::vector, ${candidateCount}, 0.70, 0.30)` as RetrievedChunk[];
+  return diversify(rows,limit);
 }
 
 export async function graphContext(labels:string[], limit=30) {
