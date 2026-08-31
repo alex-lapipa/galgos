@@ -7,7 +7,7 @@ document_type: "claim_register"
 corpus_status: "canonical"
 source_role: "claim_register"
 language: "en"
-source_languages: ["en", "es", "la"]
+source_languages: ["en", "es", "la", "grc"]
 period_start: ""
 period_end: "2026"
 geographies: ["Spain", "Iberian Peninsula"]
@@ -19,17 +19,17 @@ evidence_level: "mixed"
 source_quality: "internal_claim_register_resolved_to_corpus_sources"
 created_at: "2026-08-31"
 updated_at: "2026-08-31"
-version: "1.1"
+version: "1.2"
 review_status: "active_review"
 claim_records:
   - claim_id: "GE-C001"
     statement: "The modern Galgo Español descends directly and continuously from the Roman vertragus."
     dimension: "population"
     evidence_level: "traditional claim"
-    review_status: "unresolved"
+    review_status: "unresolved_population_bridge"
     supporting_sources: ["00_claim_classification_framework.md", "Batch_14_Synthesis_and_Compilation.md"]
-    contradicting_or_limiting_sources: ["Corpus_Gaps_and_Verification_Audit_2026.md"]
-    note: "Functional and morphological analogy must not be converted into population continuity without genetic or documentary transmission evidence."
+    contradicting_or_limiting_sources: ["Corpus_Gaps_and_Verification_Audit_2026.md", "Primary_Source_Martial_Epigrams_XIV_200_Vertragus.md", "Primary_Source_Arrian_Cynegeticus_Celtic_Vertragus.md"]
+    note: "Martial and Arrian now source-map the ancient vertragus and coursing function directly. Neither source supplies the documentary or genetic population bridge required for direct modern Galgo Español ancestry."
   - claim_id: "GE-C002"
     statement: "The Galgo Español descends directly from North African Sloughi introduced through Al-Andalus."
     dimension: "population"
@@ -102,6 +102,22 @@ claim_records:
     supporting_sources: []
     contradicting_or_limiting_sources: ["Primary_Source_Fuero_de_Salamanca_Galgo_Provision.md"]
     note: "The surviving extensive fuero/manuscript tradition is medieval and the RAE indexes the cited reference-edition passage around c.1300. Earlier lost legal layers must not be used to date this specific clause to the ninth century."
+  - claim_id: "GE-C011"
+    statement: "Martial, Epigrams XIV.200 explicitly names a vertragus and describes it hunting for its master and carrying an unharmed hare."
+    dimension: "function"
+    evidence_level: "confirmed"
+    review_status: "primary_text_source_mapped"
+    supporting_sources: ["Primary_Source_Martial_Epigrams_XIV_200_Vertragus.md"]
+    contradicting_or_limiting_sources: []
+    note: "This confirms ancient terminology and hare-hunting function. Martial does not identify the dog as Spanish or as a modern Galgo Español."
+  - claim_id: "GE-C012"
+    statement: "Arrian's Cynegeticus describes swift Celtic hounds called Vertragi and discusses their coursing function and conformation."
+    dimension: "function"
+    evidence_level: "confirmed"
+    review_status: "primary_work_source_mapped_translation_caveat"
+    supporting_sources: ["Primary_Source_Arrian_Cynegeticus_Celtic_Vertragus.md"]
+    contradicting_or_limiting_sources: []
+    note: "The ancient work frames the swift dogs as Celtic and does not place the Vertragi in Hispania. Nineteenth-century translation labels such as greyhound are editorial interpretation, not additional ancient evidence."
 ---
 
 # Galgo Español Claim Ledger
