@@ -18,8 +18,8 @@ topics: ["claims", "evidence classification", "continuity", "research gaps", "my
 evidence_level: "mixed"
 source_quality: "internal_claim_register_resolved_to_corpus_sources"
 created_at: "2026-08-31"
-updated_at: "2026-08-31"
-version: "1.2"
+updated_at: "2026-09-01"
+version: "1.3"
 review_status: "active_review"
 claim_records:
   - claim_id: "GE-C001"
@@ -28,8 +28,8 @@ claim_records:
     evidence_level: "traditional claim"
     review_status: "unresolved_population_bridge"
     supporting_sources: ["00_claim_classification_framework.md", "Batch_14_Synthesis_and_Compilation.md"]
-    contradicting_or_limiting_sources: ["Corpus_Gaps_and_Verification_Audit_2026.md", "Primary_Source_Martial_Epigrams_XIV_200_Vertragus.md", "Primary_Source_Arrian_Cynegeticus_Celtic_Vertragus.md"]
-    note: "Martial and Arrian now source-map the ancient vertragus and coursing function directly. Neither source supplies the documentary or genetic population bridge required for direct modern Galgo Español ancestry."
+    contradicting_or_limiting_sources: ["Corpus_Gaps_and_Verification_Audit_2026.md", "Primary_Source_Grattius_Cynegeticon_Vertraha.md", "Primary_Source_Martial_Epigrams_XIV_200_Vertragus.md", "Primary_Source_Arrian_Cynegeticus_Celtic_Vertragus.md"]
+    note: "Grattius, Martial and Arrian now source-map an ancient fast-hunting/vertragus tradition directly. None supplies the documentary or genetic population bridge required for direct modern Galgo Español ancestry."
   - claim_id: "GE-C002"
     statement: "The Galgo Español descends directly from North African Sloughi introduced through Al-Andalus."
     dimension: "population"
@@ -118,6 +118,14 @@ claim_records:
     supporting_sources: ["Primary_Source_Arrian_Cynegeticus_Celtic_Vertragus.md"]
     contradicting_or_limiting_sources: []
     note: "The ancient work frames the swift dogs as Celtic and does not place the Vertragi in Hispania. Nineteenth-century translation labels such as greyhound are editorial interpretation, not additional ancient evidence."
+  - claim_id: "GE-C013"
+    statement: "Grattius' Cynegeticon explicitly names a swift Vertraha in a light-hunting passage and describes it pressing quarry once found."
+    dimension: "function"
+    evidence_level: "confirmed"
+    review_status: "primary_text_source_mapped_textual_variant_caveat"
+    supporting_sources: ["Primary_Source_Grattius_Cynegeticon_Vertraha.md"]
+    contradicting_or_limiting_sources: []
+    note: "The name, speed and pursuit function are securely useful. The adjacent coat-colour adjective is textually disputed and is not promoted as a certain fact. Grattius does not identify the dog as Spanish or as a Galgo Español."
 ---
 
 # Galgo Español Claim Ledger
