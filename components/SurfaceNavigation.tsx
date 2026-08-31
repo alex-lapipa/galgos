@@ -21,11 +21,11 @@ function crumb(path:string){
  if(path.startsWith('/evidence'))return 'Evidence';
  return 'Home';
 }
-function selectedLabel(params:URLSearchParams,path:string){
+function selectedLabel(params:{get:(name:string)=>string|null},path:string){
  const q=params.get('q');if(q)return q;
  const event=params.get('event');if(event){const hit=timelineEvents.find(e=>e.id===event);return hit?`${hit.date} · ${hit.title}`:event}
- const node=params.get('node');if(node){return institutionalNodes.find(n=>n.id===node)?.label||node}
- const edge=params.get('edge');if(edge){const e=institutionalEdges.find(x=>x.id===edge);if(e){const s=institutionalNodes.find(n=>n.id===e.source)?.label||e.source;const t=institutionalNodes.find(n=>n.id===e.target)?.label||e.target;return `${s} · ${e.predicate.replaceAll('_',' ')} · ${t}`};return edge}
+ const node=params.get('node');if(node)return institutionalNodes.find(n=>n.id===node)?.label||node;
+ const edge=params.get('edge');if(edge){const e=institutionalEdges.find(x=>x.id===edge);if(e){const s=institutionalNodes.find(n=>n.id===e.source)?.label||e.source;const t=institutionalNodes.find(n=>n.id===e.target)?.label||e.target;return `${s} · ${e.predicate.replaceAll('_',' ')} · ${t}`;}return edge}
  if(path.startsWith('/archive/'))return decodeURIComponent(path.split('/').pop()||'').replaceAll('-',' ');
  return '';
 }
@@ -35,7 +35,7 @@ export function SurfaceNavigation(){
  const locale:'en'|'es'=pathname.startsWith('/es/')?'es':'en';
  const selected=selectedLabel(params,pathname);
  const preserved=new URLSearchParams();for(const key of ['q','event','node','edge']){const v=params.get(key);if(v)preserved.set(key,v)}
- const suffix=preserved.size?`?${preserved.toString()}`:'';
+ const serialized=preserved.toString();const suffix=serialized?`?${serialized}`:'';
  const askQ=params.get('q');
  const nav=[['Timeline',`/${locale}/timeline`],['Graph',`/${locale}/graph`],['Journey','/journey'],['Evidence','/evidence'],['Archive','/archive'],['Ask',`/ask${askQ?`?q=${encodeURIComponent(askQ)}`:''}`]] as const;
  return <>
