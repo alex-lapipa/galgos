@@ -20,6 +20,7 @@ function crumb(path:string){
  if(path.startsWith('/ask'))return 'Ask Archive';
  if(path.startsWith('/journey'))return 'Journey';
  if(path.startsWith('/evidence'))return 'Evidence';
+ if(path.startsWith('/claims'))return 'Claims';
  return 'Home';
 }
 function selectedLabel(params:{get:(name:string)=>string|null},path:string){
