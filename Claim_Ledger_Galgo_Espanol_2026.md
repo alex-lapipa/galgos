@@ -19,7 +19,7 @@ evidence_level: "mixed"
 source_quality: "internal_claim_register_resolved_to_corpus_sources"
 created_at: "2026-08-31"
 updated_at: "2026-09-01"
-version: "1.3"
+version: "1.4"
 review_status: "active_review"
 claim_records:
   - claim_id: "GE-C001"
@@ -28,8 +28,8 @@ claim_records:
     evidence_level: "traditional claim"
     review_status: "unresolved_population_bridge"
     supporting_sources: ["00_claim_classification_framework.md", "Batch_14_Synthesis_and_Compilation.md"]
-    contradicting_or_limiting_sources: ["Corpus_Gaps_and_Verification_Audit_2026.md", "Primary_Source_Grattius_Cynegeticon_Vertraha.md", "Primary_Source_Martial_Epigrams_XIV_200_Vertragus.md", "Primary_Source_Arrian_Cynegeticus_Celtic_Vertragus.md"]
-    note: "Grattius, Martial and Arrian now source-map an ancient fast-hunting/vertragus tradition directly. None supplies the documentary or genetic population bridge required for direct modern Galgo Español ancestry."
+    contradicting_or_limiting_sources: ["Corpus_Gaps_and_Verification_Audit_2026.md", "Primary_Source_Grattius_Cynegeticon_Vertraha.md", "Primary_Source_Martial_Epigrams_XIV_200_Vertragus.md", "Primary_Source_Arrian_Cynegeticus_Celtic_Vertragus.md", "Primary_Source_Pseudo_Oppian_Iberian_Dam.md", "Primary_Source_Nemesianus_Iberian_Blood_Dogs.md"]
+    note: "Classical sources now directly document both a fast-hunting/vertragus tradition and dogs labelled Iberian in breeding/hunting discourse. They do not establish that those categories were identical or supply the documentary/genetic bridge required for modern Galgo Español population ancestry."
   - claim_id: "GE-C002"
     statement: "The Galgo Español descends directly from North African Sloughi introduced through Al-Andalus."
     dimension: "population"
@@ -126,6 +126,22 @@ claim_records:
     supporting_sources: ["Primary_Source_Grattius_Cynegeticon_Vertraha.md"]
     contradicting_or_limiting_sources: []
     note: "The name, speed and pursuit function are securely useful. The adjacent coat-colour adjective is textually disputed and is not promoted as a certain fact. Grattius does not identify the dog as Spanish or as a Galgo Español."
+  - claim_id: "GE-C014"
+    statement: "Pseudo-Oppian's Cynegetica explicitly names an Iberian dog category and recommends pairing a Sarmatian sire with an Iberian dam."
+    dimension: "population"
+    evidence_level: "confirmed"
+    review_status: "primary_text_source_mapped_geographic-caveat"
+    supporting_sources: ["Primary_Source_Pseudo_Oppian_Iberian_Dam.md"]
+    contradicting_or_limiting_sources: []
+    note: "The ancient textual label and breeding instruction are direct evidence. Whether this particular Iberia must mean the Iberian Peninsula rather than Caucasian Iberia remains a separate philological/geographic question. The passage does not identify a Galgo Español."
+  - claim_id: "GE-C015"
+    statement: "Nemesianus' Cynegetica refers to hunting-dog progeny whose blood is described as Iberian."
+    dimension: "population"
+    evidence_level: "confirmed"
+    review_status: "primary_text_source_mapped_geographic-translation-caveat"
+    supporting_sources: ["Primary_Source_Nemesianus_Iberian_Blood_Dogs.md"]
+    contradicting_or_limiting_sources: []
+    note: "The Latin Iberian-blood reference is direct evidence; the Loeb translation renders it as Spanish blood. Neither wording establishes that the dogs were galgos or a continuous modern breed population."
 ---
 
 # Galgo Español Claim Ledger
