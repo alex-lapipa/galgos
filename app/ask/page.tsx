@@ -1,1 +1,2 @@
-export default function Ask(){return <main className="page"><span className="eyebrow">Research interface</span><h1>Ask the archive.</h1><p>Answers are retrieval-first, citation-led, and explicit about evidence classification, tier, disagreement, and gaps. The streaming model endpoint is enabled only when an AI Gateway model is configured.</p></main>}
+import {AskArchive} from '@/components/AskArchive';
+export default function Ask(){return <AskArchive/>}
